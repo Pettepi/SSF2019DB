@@ -1,3 +1,4 @@
+'use strict';
 const Cat = require('../models/cats');
 
 exports.cat_list_get = () => {

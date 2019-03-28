@@ -3,11 +3,11 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const catController = require('./controllers/catController');
 const url = 'mongodb://localhost:27017/';
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
+const catRouter = require('./routers/catRouter');
 require('dotenv').config();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -57,8 +57,8 @@ mongoose.connect(url, {useNewUrlParser: true}).then(() => {
   console.log('Connection to db failed : ' + err);
 });
 
-//forgot what is this
-//app.use(express.static('public'));
+//forgot what this does
+app.use(express.static('public'));
 
 //username and password auth
 passport.use(new LocalStrategy(
@@ -85,41 +85,6 @@ app.get('/test', (req, res) => {
    res.send('login failed');
 });
 
-//cat database CRUD stuff
-app.get('/', (req, res) => {
-   res.send('Cats');
-});
-
-app.get('/all', (req, res) => {
-    catController.cat_list_get().then((result) => {
-        res.send(result)
-    })
-});
-
-app.post('/new', bodyParser.urlencoded({extended: true}), (req, res) => {
-   const data = req.body;
-   console.log(data);
-   catController.cat_create_post(data).then((result) => {
-       res.send(result);
-   })
-});
-
-app.get('/number', (req, res) => {
-   catController.cat_number_get().then((result) => {
-       res.send(`Got ${result} cats`);
-   })
-});
-
-app.get('/sort', (req, res) => {
-    catController.cat_sort_get().then((result) => {
-        let text = '';
-        result.forEach((cat) => {
-            text += cat.name + '<br>';
-        });
-        res.send(text);
-    });
-});
-
 app.get('/hello', (req, res) => {
     res.send('received request to URL GET' +req.path);
 });
@@ -141,8 +106,10 @@ app.post('/go:param1/', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Hello World!', 'Cats');
 });
+
+app.use('/cats', catRouter);
 
 
 
