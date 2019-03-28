@@ -40,5 +40,5 @@ jspm_packages
 .env
 
 # SSL key & certificates
-.pem
-.csr
+*.pem
+*.csr
