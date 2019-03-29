@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const catController = require('../controllers/catController');
+const bodyParser = require('body-parser');
 
 //cat database CRUD stuff
 router.get('/', (req, res) => {

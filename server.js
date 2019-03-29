@@ -40,7 +40,7 @@ https.createServer(options, app).listen(3000);
 
 //https test works yay
 app.get('/', (req, res) =>{
-   res.send('HTTPS security')
+   res.send('HTTPS security works.')
 });
 
 //redirect http to https
