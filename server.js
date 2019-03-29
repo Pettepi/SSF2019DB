@@ -38,7 +38,7 @@ const options = {
 
 https.createServer(options, app).listen(3000);
 
-//https test works yay
+//https test works
 app.get('/', (req, res) =>{
    res.send('HTTPS security works.')
 });
@@ -52,7 +52,7 @@ http.createServer((req, res) => {
 //establish connection to mongoDB
 mongoose.connect(url, {useNewUrlParser: true}).then(() => {
   console.log('Connected successfully.');
-  app.listen(3000);
+//  app.listen(3000);
 }, err => {
   console.log('Connection to db failed : ' + err);
 });
