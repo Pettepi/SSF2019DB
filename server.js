@@ -52,7 +52,7 @@ http.createServer((req, res) => {
 //establish connection to mongoDB
 mongoose.connect(url, {useNewUrlParser: true}).then(() => {
   console.log('Connected successfully.');
-  app.listen(30000);
+  app.listen(3000);
 }, err => {
   console.log('Connection to db failed : ' + err);
 });
