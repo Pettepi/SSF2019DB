@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const catController = require('../controllers/catController');
 const bodyParser = require('body-parser');
+const ExifImage = require('exif').ExifImage;
+const multer = require('multer');
 
 //cat database CRUD stuff
 router.get('/', (req, res) => {
@@ -37,6 +39,21 @@ router.get('/sort', (req, res) => {
         });
         res.send(text);
     });
+});
+
+router.post('/uploads', upload.single('image'), function (req, res, next) {
+    try {
+        new ExifImage({ image: req.file.path}, function (error, exifData) {
+            if (error)
+                console.log('Error: '+ error.message);
+            else
+                console.log(exifData);
+            bodyParser.json(exifData)
+        });
+    } catch (error) {
+        console.log('Error:' + error.message);
+    }
+    next();
 });
 
 module.exports = router;
