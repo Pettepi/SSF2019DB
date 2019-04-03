@@ -8,10 +8,27 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 const catRouter = require('./routers/catRouter');
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const MemcachedStore = require('connect-memcached')(session);
+const cors = require('cors');
 require('dotenv').config();
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.enable('trust proxy');
+
+const saltRound = 12; //okayish in 2018
+
+// to use when user creates a password (or modifies existing one)
+
+//bcrypt.hash(password, saltRound, (err, hash) => {
+    // Store hash in the database
+//    console.log(hash);
+//});
+
+
 
 //username & pw auth
 const passport = require('passport');
@@ -63,15 +80,42 @@ app.use(express.static('public'));
 //username and password auth
 passport.use(new LocalStrategy(
     (username, password, done) => {
-        if (username !== process.env.username || password !== process.env.password) {
+        if (username !== process.env.username || !bcrypt.compareSync(password, process.env.password)) {
             done(null, false, {message: 'Incorrect credentials.'});
             return;
         }
-        return done(null, {}); // returned object usually contains something to identify the user
+        return done(null, {user: username}); // returned object usually contains something to identify the user
     }
 ));
 app.use(passport.initialize());
+app.use(passport.session());
 
+passport.serializeUser(((user, done) => {
+    console.log('serialize');
+    console.log(user);
+    done(null, user)
+}));
+
+passport.deserializeUser((user, done) => {
+    console.log('serialize');
+    console.log(user);
+    done(null, user)
+});
+
+app.use(session({
+    secret: 'some s3cret value',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {secure: true, // only HTTPS
+    maxAge: 2 * 60 * 60 * 1000} // 2 hours
+}));
+
+app.get('/', cors(), (req, res) => {
+    if(req.user !== undefined)
+        return res.send(`Hello ${req.user.username}!`);
+    res.send('Hello Secure World!');
+    res.json({msg: 'This is CORS-enabled for a single route.'})
+});
 
 //login
 app.post('/login',
@@ -103,10 +147,6 @@ app.post('/go:param1/', (req, res) => {
    console.log(req.body);
     res.send('got'+req.method+'request to'+req.path+
         'with body: '+JSON.stringify(req.body));
-});
-
-app.get('/', (req, res) => {
-  res.send('Hello World!', 'Cats');
 });
 
 app.use('/cats', catRouter);
