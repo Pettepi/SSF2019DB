@@ -12,8 +12,10 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MemcachedStore = require('connect-memcached')(session);
 const cors = require('cors');
+const helmet = require('helmet');
 require('dotenv').config();
 
+app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -110,6 +112,8 @@ app.use(session({
     maxAge: 2 * 60 * 60 * 1000} // 2 hours
 }));
 
+
+//CORS
 app.get('/', cors(), (req, res) => {
     if(req.user !== undefined)
         return res.send(`Hello ${req.user.username}!`);
