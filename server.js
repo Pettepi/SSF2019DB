@@ -14,6 +14,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 require('dotenv').config();
 
+app.use(express.static('public'));
 app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
@@ -74,9 +75,6 @@ mongoose.connect(url, {useNewUrlParser: true}).then(() => {
 }, err => {
   console.log('Connection to db failed : ' + err);
 });
-
-//forgot what this does
-app.use(express.static('public'));
 
 //username and password auth
 passport.use(new LocalStrategy(
