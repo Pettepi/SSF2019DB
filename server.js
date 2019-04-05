@@ -10,7 +10,6 @@ const http = require('http');
 const catRouter = require('./routers/catRouter');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
-const MemcachedStore = require('connect-memcached')(session);
 const cors = require('cors');
 const helmet = require('helmet');
 require('dotenv').config();
@@ -21,7 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.enable('trust proxy');
 
-const saltRound = 12; //okayish in 2018
+//const saltRound = 12; //okayish in 2018
 
 // to use when user creates a password (or modifies existing one)
 
