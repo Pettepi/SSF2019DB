@@ -1,15 +1,17 @@
 extends layout
 block content
   h1= add_message
-  form
+  form(method="POST")
     //name, genre, color, age, weight
-    p Name
+    p Name:
     input
-    p Genre
+    p Genre:
     input
-    p Color
+    p Color:
     input
-    p Age
+    p Age:
     input
-    p Weight
+    p Weight:
+    input
     button
+    input(type="submit")
